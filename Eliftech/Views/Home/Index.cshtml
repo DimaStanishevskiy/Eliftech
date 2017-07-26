@@ -1,31 +1,127 @@
 ﻿@{
     ViewBag.Title = "Home Page";
+    //document.location.protocol + "//" + document.location.host
 }
 
-<div class="jumbotron">
-    <h1>ASP.NET</h1>
-    <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
-    <p><a href="https://asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
+<div class="tree">
+
+</div>
+<div id="add" class="but"><a class="btn btn-success btn-mini">Add to Root</a></div>
+
+<div id="createModal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title">Create company</h4>
+            </div>
+            <div class="modal-body">
+                <p>Name</p><input id="cName" type="text" />
+                <p>EstimatedEarnings</p><input id="cEstimatedEarnings" type="text"/>
+                <input id="cIdFather" type="hidden" />
+            </div>
+            <!-- Футер модального окна -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button id="okCreate"  type="button" class="btn btn-primary">Create</button>
+            </div>
+        </div>
+    </div>
 </div>
 
-<div class="row">
-    <div class="col-md-4">
-        <h2>Getting started</h2>
-        <p>
-            ASP.NET MVC gives you a powerful, patterns-based way to build dynamic websites that
-            enables a clean separation of concerns and gives you full control over markup
-            for enjoyable, agile development.
-        </p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301865">Learn more &raquo;</a></p>
-    </div>
-    <div class="col-md-4">
-        <h2>Get more libraries</h2>
-        <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301866">Learn more &raquo;</a></p>
-    </div>
-    <div class="col-md-4">
-        <h2>Web Hosting</h2>
-        <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
+<div id="updateModal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title">Create company</h4>
+            </div>
+            <div class="modal-body">
+                <p>Name</p><input id="uName" type="text" />
+                <p>EstimatedEarnings</p><input id="uEstimatedEarnings" type="text" />
+                <input id="uId" type="hidden" />
+            </div>
+            <!-- Футер модального окна -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button id="okUpdate" type="button" class="btn btn-primary">Update</button>
+            </div>
+        </div>
     </div>
 </div>
+
+
+
+@section scripts{
+<script type="text/javascript">
+    $(document).ready(reloadList())
+
+    $('body').delegate('#add', 'click', function () {
+        var idFather = ($(this).closest("div.company")[0] != undefined) ? $(this).closest("div.company")[0].id : null;
+        
+        $('#cName').val("");
+        $('#cEstimatedEarnings').val("");    
+        $('#cIdFather').val(idFather);
+        $("#createModal").modal('show');
+    });
+
+    $('body').delegate('#delete', 'click', function () {
+        $.post("http://localhost:3020/company/Delete", { 'id': $(this).closest('div.company')[0].id }, function () {reloadList()});
+    })
+
+    $('body').delegate('#update', 'click', function () {
+        
+        $.post("http://localhost:3020/company/Find", { 'id': $(this).closest('div.company')[0].id }, function (data) {
+            var company = $.parseJSON(data);
+            $("#uId").val(company.Id);
+            $('#uName').val(company.Name);
+            $('#uEstimatedEarnings').val(company.EstimatedEarnings);
+            $("#updateModal").modal('show');
+        });
+    })
+
+    $('#okUpdate').click(function () {
+        $.post("http://localhost:3020/company/Update", { 'id': $('#uId').val(), 'name': $('#uName').val(), 'estimatedEarnings': $('#uEstimatedEarnings').val() },
+            function (data) {
+                $("#updateModal").modal('hide');
+                reloadList();
+            })
+    })
+
+    $('#okCreate').click(function () {
+        console.log($('#cName').val());
+        console.log($('#cEstimatedEarnings').val());
+        console.log($('#cIdFather').val());
+        $.post("http://localhost:3020/company/Create", { 'name': $('#cName').val(), 'EstimatedEarnings': $('#cEstimatedEarnings').val(), 'fatherCompanyId': $('#cIdFather').val()},
+            function (data) {
+                $("#createModal").modal('hide')
+                reloadList();
+            })
+    })
+
+    function reloadList() {
+        $.post("http://localhost:3020/company/FindList", function (data) {
+            var Json = $.parseJSON(data);
+            $('.tree').empty();
+            result = '';
+            $.each(Json, function (i, obj) { result += displayCompany(obj) });
+            $(result).appendTo('.tree');
+        })
+    }
+
+
+
+    function displayCompany(company){
+        result = '<div id="' + company.Id + '"class="company">';
+        result += '<div class="name">' + company.Name + '</div> <div class="money">' + company.EstimatedEarnings + '</div> <div class="money">' + company.FullEstimatedEarnings + '</div> <div id="update" class="but"><a class="btn btn-primary btn-mini">Up</a></div> <div id="delete" class="but"><a class="btn btn-danger btn-mini">Del</a> </div> <div id="add" class="but"><a class="btn btn-success btn-mini">Add</a></div>';
+        if (company.ChildrenCompanies.length > 0)
+        {
+            result += '<div class="child" >';
+            $.each(company.ChildrenCompanies, function (i, obj) { result += displayCompany(obj) });
+            result += '</div >';
+        }
+        result += '</div>';
+        return result;
+    }
+</script>
+    }

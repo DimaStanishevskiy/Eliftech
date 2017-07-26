@@ -22,3 +22,43 @@ select,
 textarea {
     max-width: 280px;
 }
+
+.name,
+.money,
+.but {
+    display: inline-block;
+  
+}
+
+.name, .money{
+    background-color:darkgray;
+}
+
+.name{
+    width: 200px;
+}
+
+.money{
+    width: 50px;
+}
+
+.child {
+    left: 30px;
+    position: relative;
+}
+
+
+
+.but{
+    /*width: 40px;*/
+}
+.but a
+{
+    font-size:7px;
+
+}
+
+.company{
+    padding: 5px;
+}
+
