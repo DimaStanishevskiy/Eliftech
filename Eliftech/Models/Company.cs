@@ -15,13 +15,15 @@ namespace Eliftech.Models
 
         [Required]
         public string Name { set; get; }
-        [NotMapped]
+
+        //поле которым управляет свойство EstimatedEarnings, нужно для инициализации
         private int estimatedEarnings = 0;
         [Required]
         public int EstimatedEarnings
         {
             set
-            {
+            {   
+                //вызывает метод для перерасчета всех связанных компаний
                 ChangeEstimatedEarnings(this.estimatedEarnings, value);
                 estimatedEarnings = value;
             }
@@ -30,16 +32,16 @@ namespace Eliftech.Models
                 return estimatedEarnings;
             }
         }
-
+        //полная прибыль компании
         [NotMapped]
         public int FullEstimatedEarnings { private set; get; } = 0;
 
-        [NotMapped]
         private Company fatherCompany = null;
         [JsonIgnore]
         public Company FatherCompany {
             set
             {
+                //перерасчет родительских компаний
                 if (fatherCompany != null)
                     fatherCompany.ChangeEstimatedEarnings(FullEstimatedEarnings, 0);
                 fatherCompany = value;
@@ -55,6 +57,7 @@ namespace Eliftech.Models
         public virtual List<Company> ChildrenCompanies { set; get; }
 
         
+        //пересчитывает полный доход, циклично вызывается для родительских компаний всех порядков
         private void ChangeEstimatedEarnings(int oldValue, int newValue)
         {
             this.FullEstimatedEarnings += newValue - oldValue;
@@ -63,7 +66,7 @@ namespace Eliftech.Models
         }
 
         public Company()
-        { }
+        {}
 
         public Company(string Name, int EstimatedEarnings)
         {

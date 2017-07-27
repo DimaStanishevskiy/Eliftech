@@ -66,12 +66,12 @@
     });
 
     $('body').delegate('#delete', 'click', function () {
-        $.post("http://localhost:3020/company/Delete", { 'id': $(this).closest('div.company')[0].id }, function () {reloadList()});
+        $.post(location.origin + "/company/Delete", { 'id': $(this).closest('div.company')[0].id }, function () {reloadList()});
     })
 
     $('body').delegate('#update', 'click', function () {
         
-        $.post("http://localhost:3020/company/Find", { 'id': $(this).closest('div.company')[0].id }, function (data) {
+        $.post(location.origin + "/company/Find", { 'id': $(this).closest('div.company')[0].id }, function (data) {
             var company = $.parseJSON(data);
             $("#uId").val(company.Id);
             $('#uName').val(company.Name);
@@ -81,7 +81,7 @@
     })
 
     $('#okUpdate').click(function () {
-        $.post("http://localhost:3020/company/Update", { 'id': $('#uId').val(), 'name': $('#uName').val(), 'estimatedEarnings': $('#uEstimatedEarnings').val() },
+        $.post(location.origin + "/company/Update", { 'id': $('#uId').val(), 'name': $('#uName').val(), 'estimatedEarnings': $('#uEstimatedEarnings').val() },
             function (data) {
                 $("#updateModal").modal('hide');
                 reloadList();
@@ -92,7 +92,7 @@
         console.log($('#cName').val());
         console.log($('#cEstimatedEarnings').val());
         console.log($('#cIdFather').val());
-        $.post("http://localhost:3020/company/Create", { 'name': $('#cName').val(), 'EstimatedEarnings': $('#cEstimatedEarnings').val(), 'fatherCompanyId': $('#cIdFather').val()},
+        $.post(location.origin + "/company/Create", { 'name': $('#cName').val(), 'EstimatedEarnings': $('#cEstimatedEarnings').val(), 'fatherCompanyId': $('#cIdFather').val()},
             function (data) {
                 $("#createModal").modal('hide')
                 reloadList();
@@ -100,7 +100,7 @@
     })
 
     function reloadList() {
-        $.post("http://localhost:3020/company/FindList", function (data) {
+        $.post(location.origin + "/company/FindList", function (data) {
             var Json = $.parseJSON(data);
             $('.tree').empty();
             result = '';
@@ -108,8 +108,6 @@
             $(result).appendTo('.tree');
         })
     }
-
-
 
     function displayCompany(company){
         result = '<div id="' + company.Id + '"class="company">';

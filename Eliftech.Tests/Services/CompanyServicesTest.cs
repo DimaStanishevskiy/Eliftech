@@ -38,20 +38,6 @@ namespace Eliftech.Tests.Services
         }
 
         [TestMethod]
-        public void ServiceDeleteCompany()
-        {
-            services.CreateCompany("CompanyForDelete", 100);
-            bool result = services.DeleteCompany(services.FindCompany("CompanyForDelete"));
-            Assert.IsTrue(result);
-        }
-
-        [TestMethod]
-        public void ServiceFindListCompany()
-        {
-            Assert.IsNotNull(services.FindListCompanies());
-        }
-
-        [TestMethod]
         public void ServiceSearchRepeats()
         {
             List<Company> list = services.FindListCompanies();

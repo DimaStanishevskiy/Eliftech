@@ -18,35 +18,21 @@ namespace Eliftech.Services
 
         public List<Company> FindListCompanies()
         {
-           var Companies = context.Companies;
-            //foreach (Company item in Companies)
-            //    Walker(item);
-            return Companies.Where(n => n.FatherCompany == null).ToList();
+            //сначала получаем все компании
+            var Companies = context.Companies;
+            //потом получаем только корневые, остальные будут вложенные
+            List<Company> RootCompanies = Companies.Where(n => n.FatherCompany == null).ToList();
+            return RootCompanies;
         }
 
         public Company FindCompany(int Id)
         {
-            try
-            {
-                return context.Companies.Include(t => t.ChildrenCompanies).Where(t => t.Id == Id).FirstOrDefault();
-            }
-            catch (Exception e)
-            {
-                throw e;
-            }
+            return context.Companies.Include(t => t.ChildrenCompanies).Where(t => t.Id == Id).FirstOrDefault();
         }
 
         public Company FindCompany(string Name)
         {
-            try
-            {
-                return context.Companies.Where(t => t.Name == Name).FirstOrDefault();
-
-            }
-            catch (Exception e)
-            {
-                throw e;
-            }
+            return context.Companies.Where(t => t.Name == Name).FirstOrDefault();
         }
 
         public bool CreateCompany(string Name, int EstimatedEarnings, Company FatherCompany = null)
@@ -75,6 +61,8 @@ namespace Eliftech.Services
             return context.SaveChanges() > 0;
         }
 
+
+        //Костыль: так как запрещенно каскадное удаление при ссылки таблицы на себя: рекурсивный вызов удаления дочерних компаний
         private void RemoveCompany(Company company)
         { 
             foreach (Company item in company.ChildrenCompanies.ToArray())
@@ -83,14 +71,6 @@ namespace Eliftech.Services
             }
             context.Companies.Remove(company);
             context.SaveChanges();
-        }
-        public void Walker(Company company)
-        {
-            foreach (Company childCompany in company.ChildrenCompanies)
-            {
-                Console.WriteLine(childCompany.Name);
-                Walker(childCompany);
-            }
         }
     }
      

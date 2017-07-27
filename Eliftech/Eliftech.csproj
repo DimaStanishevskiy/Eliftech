@@ -152,15 +152,6 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201707260709285_Migration.cs" />
-    <Compile Include="Migrations\201707260709285_Migration.Designer.cs">
-      <DependentUpon>201707260709285_Migration.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201707260716065_Migration1.cs" />
-    <Compile Include="Migrations\201707260716065_Migration1.Designer.cs">
-      <DependentUpon>201707260716065_Migration1.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Company.cs" />
     <Compile Include="Models\DataContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -173,11 +164,13 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Migrations\CreateTable.sql" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
@@ -219,14 +212,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Scripts\jquery-1.10.2.min.map" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Migrations\201707260709285_Migration.resx">
-      <DependentUpon>201707260709285_Migration.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201707260716065_Migration1.resx">
-      <DependentUpon>201707260716065_Migration1.cs</DependentUpon>
-    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
